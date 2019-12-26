@@ -56,6 +56,10 @@ int precedence(string operator_)
 	{
 		return DIVISION;	
 	}
+	else if(operator_ == "^")
+	{
+		return POWER;
+	}
 }
 
 void tokenReader(string formula,vector<string> &tokens)
@@ -98,7 +102,28 @@ void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &outpu
 		}else{
 			if(operators.empty() == true){
 				operators.push(tokens[i]);
-			}else if(precedence(tokens[i]) > precedence(operators.top()) ){
+			}
+			else if(tokens[i] == "("){
+				operators.push(tokens[i]);
+			}
+
+			else if(tokens[i] == ")")
+			{
+				while(true)
+				{
+					if(operators.top() != "(")
+					{
+						output.push(operators.top());
+						operators.pop();
+					}else{
+						break;
+					}
+
+				}
+
+				operators.pop();
+			}
+			else if(precedence(tokens[i]) > precedence(operators.top()) ){
 				operators.push(tokens[i]);
 			}else{
 				while(precedence(operators.top()) >= precedence(tokens[i]))
@@ -125,10 +150,9 @@ void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &outpu
 	}
 }
 
-
 int main()
 {
-	string expression = "20*5*3/6+15";
+	string expression = "(20+10)^(n)*2^(1/2)";
 	vector<string> tokens;
 
 	tokenReader(expression,tokens);
