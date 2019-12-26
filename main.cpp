@@ -5,6 +5,14 @@
 #include <vector>
 using namespace std;
 
+//precedence of operators
+#define PLUS 1
+#define MINUS 1
+#define MULTIPLY 2
+#define DIVISION 2
+#define PARENTHESES 3
+#define POWER 4
+
 bool is_number(const std::string& s)
 {
     std::string::const_iterator it = s.begin();
@@ -30,6 +38,26 @@ int digitCounter(string s)
 	return digits;
 }
 
+int precedence(string operator_)
+{
+	if(operator_ == "+")
+	{
+		return PLUS;
+	}
+	else if(operator_ == "-")
+	{
+		return MINUS;	
+	}
+	else if(operator_ == "*")
+	{
+		return MULTIPLY;	
+	}
+	else if(operator_ == "/")
+	{
+		return DIVISION;	
+	}
+}
+
 void tokenReader(string formula,vector<string> &tokens)
 {
 	int length = formula.length();
@@ -51,8 +79,6 @@ void tokenReader(string formula,vector<string> &tokens)
 				i = i + digits;
 			}
 			
-			
-
 			tokens.push_back(number);
 		}
 		else
@@ -65,7 +91,6 @@ void tokenReader(string formula,vector<string> &tokens)
 //RPN: Reverse Polish Notation
 void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &output)
 {
-	//cout << tokens[0];
 	for(int i = 0; i < tokens.size();i++)
 	{
 		if(is_number(tokens[i])){
@@ -73,9 +98,22 @@ void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &outpu
 		}else{
 			if(operators.empty() == true){
 				operators.push(tokens[i]);
+			}else if(precedence(tokens[i]) > precedence(operators.top()) ){
+				operators.push(tokens[i]);
 			}else{
-				output.push(operators.top());
-				operators.pop();
+				while(precedence(operators.top()) >= precedence(tokens[i]))
+				{
+					if(operators.size() == 1){
+						break;
+					}
+					output.push(operators.top());
+					operators.pop();
+				}
+				if(operators.size() == 1 && precedence(operators.top()) >= precedence(tokens[i]) ){
+					output.push(operators.top());
+					operators.pop();
+				}
+
 				operators.push(tokens[i]);
 			}
 		}
@@ -90,8 +128,7 @@ void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &outpu
 
 int main()
 {
-	string expression = "20-40+10+30+40-70";
-
+	string expression = "20*5*3/6+15";
 	vector<string> tokens;
 
 	tokenReader(expression,tokens);
@@ -105,7 +142,6 @@ int main()
 		cout << output.front() << " ";
 		output.pop();
 	}
-
 
 	return 0;
 }
