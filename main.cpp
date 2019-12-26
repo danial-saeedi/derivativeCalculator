@@ -1,9 +1,16 @@
 #include <iostream>
-#include <stack>
 #include <queue>
+#include <stack>
 #include <string>
 #include <vector>
 using namespace std;
+
+bool is_number(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
 
 int digitCounter(string s)
 {
@@ -55,18 +62,50 @@ void tokenReader(string formula,vector<string> &tokens)
 	}
 }
 
+//RPN: Reverse Polish Notation
+void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &output)
+{
+	//cout << tokens[0];
+	for(int i = 0; i < tokens.size();i++)
+	{
+		if(is_number(tokens[i])){
+			output.push(tokens[i]);
+		}else{
+			if(operators.empty() == true){
+				operators.push(tokens[i]);
+			}else{
+				output.push(operators.top());
+				operators.pop();
+				operators.push(tokens[i]);
+			}
+		}
+	}
+
+	while (!operators.empty()) {
+		output.push(operators.top());
+		operators.pop();
+	}
+}
+
+
 int main()
 {
-	string formula = "(20+20)*3+1";
+	string expression = "20-40+10+30+40-70";
 
 	vector<string> tokens;
 
-	tokenReader(formula,tokens);
+	tokenReader(expression,tokens);
 
-	for(int i = 0;i < tokens.size();i++)
-	{
-		cout << tokens[i] << endl;
+	stack<string> operators;
+	queue<string> output;
+
+	rnpCovn(tokens,operators,output);
+
+	while (!output.empty()) {
+		cout << output.front() << " ";
+		output.pop();
 	}
+
 
 	return 0;
 }
