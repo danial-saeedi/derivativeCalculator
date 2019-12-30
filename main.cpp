@@ -245,7 +245,7 @@ void printPostorder(struct Node* node)
 
 int main()
 {
-	string expression = "2*(x)^(2)/((x)";
+	string expression = "2*(x)^(2)/((x))";
 	vector<string> tokens;
 
 	stack<string> operators;
