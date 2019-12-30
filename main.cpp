@@ -1,8 +1,11 @@
 #include <iostream>
 #include <queue>
 #include <stack>
-#include <string>
+#include<string>
+#include<cstring>
 #include <vector>
+
+//Headers
 using namespace std;
 
 //precedence of operators
@@ -12,12 +15,25 @@ using namespace std;
 #define DIVISION 2
 #define PARENTHESES 3
 #define POWER 4
-
-bool is_number(const std::string& s)
+  
+bool is_number(const string& s)
 {
-    std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
+    string::const_iterator it = s.begin();
+    while (it != s.end() && isdigit(*it)) ++it;
     return !s.empty() && it == s.end();
+}
+
+bool is_letter(string input)
+{
+	for (int i = 0; i < input.size(); i++)
+	{
+		int uppercaseChar = toupper(input[i]);
+		if (uppercaseChar < 'A' || uppercaseChar > 'Z') 
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 int digitCounter(string s)
@@ -93,11 +109,11 @@ void tokenReader(string formula,vector<string> &tokens)
 }
 
 //RPN: Reverse Polish Notation
-void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &output)
+void rpnConv(vector<string> tokens,stack<string> &operators,queue<string> &output)
 {
 	for(int i = 0; i < tokens.size();i++)
 	{
-		if(is_number(tokens[i])){
+		if(is_number(tokens[i]) || is_letter(tokens[i])){
 			output.push(tokens[i]);
 		}else{
 			if(operators.empty() == true){
@@ -150,22 +166,105 @@ void rnpCovn(vector<string> tokens,stack<string> &operators,queue<string> &outpu
 	}
 }
 
+struct Node {
+   string data;   
+   struct Node *left;
+   struct Node *right;
+};
+
+struct Node* newNode(string data) 
+{
+    struct Node* temp = new Node; 
+    temp->data = data; 
+    temp->left = temp->right = NULL; 
+    return temp;
+}; 
+
+void constructTree(queue<string> output,stack<struct Node*> &tree)
+{
+	while (!output.empty())
+	{
+		if(is_number(output.front()) || is_letter(output.front()))
+		{
+			Node *parent = newNode(output.front());
+
+			tree.push(parent);
+		}else if(output.front() == "^"){
+			Node *parent = newNode(output.front());
+
+			Node *right = tree.top();
+			tree.pop();
+
+			Node *left = tree.top();
+			tree.pop();
+
+			parent->left = left;
+			parent->right = right;
+
+			tree.push(parent);
+		}
+		else if(output.front() == "+" || output.front() == "-" || output.front() == "/" || output.front() == "*")
+		{
+			Node *parent = newNode(output.front());
+
+			Node *right = tree.top();
+			tree.pop();
+
+			Node *left = tree.top();
+			tree.pop();
+
+			parent->left = left;
+			parent->right = right;
+
+			tree.push(parent);
+		}
+
+		output.pop();
+	}
+
+	// while (!temp.empty())
+	// {
+	// 	//cout << temp.top() << " ";
+	// 	temp.pop();
+	// }
+}
+
+void printPostorder(struct Node* node)
+{
+    if (node == NULL)
+        return; 
+  
+    // first recur on left subtree 
+    printPostorder(node->left); 
+  
+    // then recur on right subtree 
+    printPostorder(node->right); 
+
+    cout << node->data << " ";
+}
+
 int main()
 {
-	string expression = "(20+10)^(n)*2^(1/2)";
+	string expression = "2*(x)^(2)/((x)";
 	vector<string> tokens;
-
-	tokenReader(expression,tokens);
 
 	stack<string> operators;
 	queue<string> output;
 
-	rnpCovn(tokens,operators,output);
+	tokenReader(expression,tokens);
 
-	while (!output.empty()) {
-		cout << output.front() << " ";
-		output.pop();
-	}
+	rpnConv(tokens,operators,output);
 
+	stack<struct Node*> tree;
+
+	constructTree(output,tree);
+
+	printPostorder(tree.top());
+
+	 // while (!output.empty())
+	 // {
+	 // 	cout << output.front() << " ";
+	 // 	output.pop();
+	 // }
 	return 0;
 }
