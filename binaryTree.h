@@ -64,5 +64,5 @@ void printPostorder(struct Node* node)
   
     printPostorder(node->right); 
 
-    cout << node->data << " ";
+    cout << node->data << endl;
 }

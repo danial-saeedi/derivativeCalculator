@@ -4,6 +4,7 @@
 #include<string>
 #include<cstring>
 #include <vector>
+#include<unordered_map> 
 using namespace std;
 
 //precedence of operators
@@ -18,93 +19,12 @@ using namespace std;
 #include "functions.h"
 #include "RPNConverter.h"
 #include "binaryTree.h"
-
-// struct Node* multiply(Node *subtree)
-// {
-	
-// }
-
-struct Node* polynomial(Node *subtree);
-
-struct Node* powerDerv(Node* subtree)
-{
-	string base = subtree->left->data;
-
-	//Remember to delete
-	subtree->left = NULL;
-
-	string power = subtree->right->data;
-
-	string newPower;
-
-	if(power == "/")
-	{
-		string numerator = subtree->right->left->data;
-		string denominator = subtree->right->right->data;
-
-		newPower = to_string(stoi(numerator)-stoi(denominator))  + "/" +  denominator;
-
-		power = numerator+ "/" + denominator;
-	}else{
-		newPower = to_string(stoi(subtree->right->data) -1);
-	}
-
-	//Remember to delete
-	subtree->right = NULL;
-
-	subtree->data = "(" + power + ")" + base + "^" +"("+newPower+")";
-
-	return subtree;
-};
-
-struct Node* multiplyDerv(Node* subtree)
-{
-	polynomial(subtree->right);
-	subtree->data = subtree->left->data + "*" +subtree->right->data;
-
-	//Remember to delete
-	subtree->left = NULL;
-	subtree->right = NULL;
-
-	return subtree;
-};
-
-struct Node* polynomial(Node *subtree)
-{
-	if(subtree->data == "+" || subtree->data == "-")
-	{
-		subtree->left = polynomial(subtree->left);
-		subtree->right = polynomial(subtree->right);
-
-		subtree->data = subtree->left->data + subtree->data + subtree->right->data;
-
-		return subtree;
-	}
-	else if(subtree->data == "^")
-	{
-		return powerDerv(subtree);
-	}
-	else if(subtree->data == "*")
-	{
-		return multiplyDerv(subtree);
-	}else if(is_letter(subtree->data))
-	{
-		subtree->data = "1";
-
-		return subtree;
-	}else if(is_number(subtree->data))
-	{
-		subtree->data = "0";
-
-		return subtree;
-	}
-
-	return 0;
-};
+#include "treeToInfix.h"
+#include "derivativeFunction.h"
 
 int main()
 {
-	string expression = "5*(x)^(2/6)-(x)^(5/2)+(x)^(4)-(x)^(9)+2*x^8";
+	string expression = "((x)^(4)+x^5)/(x^8+x^2)";
 
 	vector<string> tokens;
 	stack<string> operators;
@@ -128,11 +48,11 @@ int main()
 	//And then we will convert postfix into expresion tree
 	constructTree(output,tree);
 
+	polynomial(tree.top());
 
-	Node *copyOfTree = tree.top();
-
-	polynomial(copyOfTree);
-
-	cout << copyOfTree->data;
+	cout << tree.top()->data;
 	return 0;
 }
+
+
+//printPostorder(tree.top());
