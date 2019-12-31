@@ -88,9 +88,15 @@ void rpnConv(vector<string> tokens,stack<string> &operators,queue<string> &outpu
 {
 	for(int i = 0; i < tokens.size();i++)
 	{
-		if(is_number(tokens[i]) || is_letter(tokens[i])){
+		if(!is_number(tokens[i]) && tokens[i].size() > 1)
+		{
 			output.push(tokens[i]);
-		}else{
+		}
+		else if(is_number(tokens[i]) || is_letter(tokens[i])){
+			output.push(tokens[i]);
+		}
+		else
+		{
 			if(operators.empty() == true){
 				operators.push(tokens[i]);
 			}

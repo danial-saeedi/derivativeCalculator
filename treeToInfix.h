@@ -2,7 +2,7 @@
 void infixConverter(struct Node* subtree,stack<string> &infix)
 {
     if (subtree == NULL)
-        return; 
+        return;
 
     infixConverter(subtree->left,infix); 
   
@@ -29,5 +29,7 @@ void infixConverter(struct Node* subtree,stack<string> &infix)
 		}
 
 		infix.push(left + subtree->data + right);
+    }else{
+    	infix.push(subtree->data);	
     }
 }

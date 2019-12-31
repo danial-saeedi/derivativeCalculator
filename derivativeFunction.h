@@ -45,11 +45,11 @@ struct Node* multiplyDerv(Node* subtree)
 
 struct Node* divideDerv(Node* subtree)
 {
+	
 	stack<string> leftInfix;
 	stack<string> rightInfix;
 	infixConverter(subtree->left,leftInfix);
 	infixConverter(subtree->right,rightInfix);
-
 
 	polynomial(subtree->left);
 	polynomial(subtree->right);
@@ -62,6 +62,41 @@ struct Node* divideDerv(Node* subtree)
 	"/(" + rightInfix.top() + ")^2"
 	 ;
 	return subtree;
+}
+
+struct Node* functionDerv(Node* subtree)
+{
+	string functionName;
+	int chars = charCounter(subtree->data);
+	functionName = (subtree->data).substr(0,chars);
+
+	string u = (subtree->data).substr(chars+1,(subtree->data).length()-(chars+2));
+
+	vector<string> tokens;
+	stack<string> operators;
+	queue<string> output;
+	tokenReader(u,tokens);
+	//And then we convert the infix form into postfix notation
+	rpnConv(tokens,operators,output);
+
+	stack<struct Node*> newTree;
+
+	//And then we will convert postfix into expresion tree
+	constructTree(output,newTree);
+
+	polynomial(newTree.top());
+
+	if(functionName == "sin"){
+		subtree->data = "(" + newTree.top()->data + ")cos("+ u +")";
+
+	}
+
+	else if(functionName == "cos"){
+		subtree->data = "(-1)*(" + newTree.top()->data + ")sin("+ u +")";
+	}
+
+	return 0;
+
 }
 
 struct Node* polynomial(Node *subtree)
@@ -86,6 +121,11 @@ struct Node* polynomial(Node *subtree)
 	else if(subtree->data == "/")
 	{
 		return divideDerv(subtree);
+	}
+	else if(!is_number(subtree->data) && (subtree->data).size() > 1)
+	{
+		functionDerv(subtree);
+		return subtree;
 	}
 	else if(is_letter(subtree->data))
 	{

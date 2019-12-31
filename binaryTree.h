@@ -50,6 +50,11 @@ void constructTree(queue<string> output,stack<struct Node*> &tree)
 
 			tree.push(parent);
 		}
+		else{
+			Node *parent = newNode(output.front());
+
+			tree.push(parent);
+		}
 
 		output.pop();
 	}
@@ -64,5 +69,5 @@ void printPostorder(struct Node* node)
   
     printPostorder(node->right); 
 
-    cout << node->data << endl;
+    cout << node->data << " ";
 }
