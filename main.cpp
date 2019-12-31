@@ -24,7 +24,7 @@ using namespace std;
 
 int main()
 {
-	string expression = "((x)^(4)+x^5)/(x^8+x^2)";
+	string expression = "(2*sin(x^8-x^9)+x)/(cos(x)+Ln(x^2))";
 
 	vector<string> tokens;
 	stack<string> operators;
@@ -40,17 +40,22 @@ int main()
 	*/
 	tokenReader(expression,tokens);
 
-	//And then we convert the infix form into postfix notation
-	rpnConv(tokens,operators,output);
+	for(int i = 0;i < tokens.size(); i++)
+	{
+		cout << tokens[i] << endl;
+	}
 
-	stack<struct Node*> tree;
+	//And then we convert the infix form into postfix notation
+	//rpnConv(tokens,operators,output);
+
+	//stack<struct Node*> tree;
 
 	//And then we will convert postfix into expresion tree
-	constructTree(output,tree);
+	//constructTree(output,tree);
 
-	polynomial(tree.top());
+	//polynomial(tree.top());
 
-	cout << tree.top()->data;
+	//cout << tree.top()->data;
 	return 0;
 }
 

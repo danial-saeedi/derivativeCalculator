@@ -49,8 +49,32 @@ void tokenReader(string formula,vector<string> &tokens)
 			
 			tokens.push_back(number);
 		}
-		else
+		else if(is_letter(formula.substr(i,1)))
 		{
+			string function = formula.substr(i,1);
+
+			int characters = charCounter(formula.substr(i+1));
+
+			if(characters > 0){
+				for(int j = i+1; j <= i+characters; j++)
+				{
+					function += formula.substr(j,1);
+				}
+
+				i = i + characters+2;
+				function += "(";
+				while(formula.substr(i,1) != ")")
+				{
+					function += formula.substr(i,1);
+					i++;
+				}
+				function += ")";
+				tokens.push_back(function);
+			}else{
+				tokens.push_back(formula.substr(i,1));
+			}
+		}
+		else{
 			tokens.push_back(formula.substr(i,1));
 		}
 	}

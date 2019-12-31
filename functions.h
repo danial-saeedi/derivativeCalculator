@@ -35,3 +35,21 @@ int digitCounter(string s)
 
 	return digits;
 }
+
+int charCounter(string s)
+{
+	int letters = 0;
+	for(int i = 0; i < s.length();i++)
+	{
+		if(is_letter(s.substr(i,1)))
+		{
+			letters += 1;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	return letters;
+}
