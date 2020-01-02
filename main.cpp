@@ -4,7 +4,7 @@
 #include<string>
 #include<cstring>
 #include <vector>
-#include<unordered_map> 
+
 using namespace std;
 
 //precedence of operators
@@ -24,7 +24,7 @@ using namespace std;
 
 int main()
 {
-	string expression = "(sin(x^7))/(cos(x)+x)";
+	string expression = "(sin(x^7)+x^8)/(cos(x)+x)";
 
 	vector<string> tokens;
 	stack<string> operators;
