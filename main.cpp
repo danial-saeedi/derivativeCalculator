@@ -1,10 +1,14 @@
+/*
+* Programmer : Danial Saeedi
+* Date : 1/19/2020
+* Description: This program calculates some basic derivatives.
+* Github : https://github.com/danial-saeedi
+*/
 #include <iostream>
 #include <queue>
 #include <stack>
-#include<string>
-#include<cstring>
 #include <vector>
-
+#include <fstream>
 using namespace std;
 
 //precedence of operators
@@ -24,9 +28,17 @@ using namespace std;
 
 int main()
 {
-	string expression = "(sin(x^7)+x^8)/(cos(x)+x)";
+	//First we read the function in formula.txt 
+	ifstream fin;
+	fin.open("formula.txt");
+	string expression;
+
+	fin >> expression;
+
+	fin.close();
 
 	vector<string> tokens;
+
 	stack<string> operators;
 
 	//This queue contains postfix notation of given expression
@@ -53,8 +65,11 @@ int main()
 	polynomial(tree.top());
 
 	cout << tree.top()->data;
+
+	//And Finally,save results in derivative.txt
+	ofstream fout;
+	fout.open("derivative.txt");
+	fout << tree.top()->data;
+	fout.close();
 	return 0;
 }
-
-
-//printPostorder(tree.top());

@@ -46,20 +46,27 @@ struct Node* powerDerv(Node* subtree)
 {
 	string base = subtree->left->data;
 
-	//Remember to delete
-	subtree->left = NULL;
-
 	string power = subtree->right->data;
 
 	string newPower = "";
 
-	
-	newPower = to_stringN(stoiN(subtree->right->data) -1);
+	if(power == "/")
+	{
+		string numerator = subtree->right->left->data;
+		string denominator = subtree->right->right->data;
+
+		newPower = to_string(stoi(numerator)-stoi(denominator))  + "/" +  denominator;
+
+		power = numerator+ "/" + denominator;
+	}else{
+		newPower = to_string(stoi(subtree->right->data) -1);
+	}
 
 	//Remember to delete
 	subtree->right = NULL;
 
 	subtree->data = "(" + power + ")" + base + "^" +"("+newPower+")";
+
 	return subtree;
 };
 
